@@ -9,6 +9,7 @@
 #include "CommonStates.h"
 #include "AudioMgr.h"
 
+
 using namespace std;
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -33,6 +34,7 @@ void Game::Load()
 	ecar.CreateFrom("data/ferrari.x", gd3dDevice, mFX.mCache);
 	mCar.Initialise(ecar);
 	mCar.GetPosition() = Vector3(0, -2, 6);
+	mCar.GetRotation() = Vector3(0, (90 * PI / 180), 0);
 	mCar.GetMesh().GetSubMesh(1).material.gfxData.Set(Vector4(1,1,1,1), Vector4(1,1,1,1), Vector4(0.125f, 0.125f, 0.05f, 5));  //body has a touch of speculr shinyness
 	mCar.GetMesh().GetSubMesh(0).material.gfxData.Set(Vector4(1, 1, 1, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1));  //tyres are not shiny!
 	mLoadData.loadedSoFar++;
@@ -40,7 +42,7 @@ void Game::Load()
 
 void Game::LoadDisplay(float dTime)
 {
-	BeginRender(Colours::Black);
+	BeginRender(Colours::White);
 
 	mpSpriteBatch->Begin();
 
@@ -57,11 +59,11 @@ void Game::LoadDisplay(float dTime)
 	ss << L"Loading meshes(" << (int)(((float)mLoadData.loadedSoFar / (float)mLoadData.totalToLoad)*100.f) << L"%) ";
 	for (int i = 0; i < pips; ++i)
 		ss << L'.';
-	mpFont2->DrawString(mpSpriteBatch, ss.str().c_str(), Vector2(100, 200), Colours::White, 0, Vector2(0, 0), Vector2(1.f, 1.f));
+	mpFont2->DrawString(mpSpriteBatch, ss.str().c_str(), Vector2(100, 200), Colours::Black, 0, Vector2(0, 0), Vector2(1.f, 1.f));
 
 	ss.str(L"");
 	ss << L"FPS:" << (int)(1.f / dTime);
-	mpFont->DrawString(mpSpriteBatch, ss.str().c_str(), Vector2(10, 550), Colours::White, 0, Vector2(0, 0), Vector2(0.5f, 0.5f));
+	mpFont->DrawString(mpSpriteBatch, ss.str().c_str(), Vector2(10, 10), Colours::Black, 0, Vector2(0, 0), Vector2(1.f, 1.f));
 
 	mpSpriteBatch->End();
 
@@ -131,7 +133,7 @@ void Game::Update(float dTime)
 	mCamPos.z += mGamepad.GetState(0).leftStickY * dTime;
 	mCamPos.y += mGamepad.GetState(0).rightStickY * dTime;
 
-	mCar.GetRotation().y = GetClock();
+	//mCar.GetRotation().y = GetClock();
 }
 
 
@@ -149,14 +151,14 @@ void Game::Render(float dTime)
 		return;
 	}
 
-	BeginRender(Colours::Black);
+	BeginRender(Vector4( 0.5f, 0.5f, 0.5f, 1.0f ));
 
 	FX::SetPerFrameConsts(gd3dImmediateContext, mCamPos);
 
 	CreateProjectionMatrix(FX::GetProjectionMatrix(), 0.25f*PI, GetAspectRatio(), 1, 1000.f);
 
 
-	CreateViewMatrix(FX::GetViewMatrix(), Vector3(0,0,-6), Vector3(0, 0, 0), Vector3(0, 1, 0));
+	CreateViewMatrix(FX::GetViewMatrix(), Vector3(0, 5, -10), Vector3(0, 3.25f, 0), Vector3(0, 1, 0));
 
 	mFX.Render(mCar, gd3dImmediateContext);
 
@@ -165,12 +167,12 @@ void Game::Render(float dTime)
 	mpSpriteBatch->Begin(SpriteSortMode_Deferred, state.NonPremultiplied());
 
 	//general messages
-	wstringstream ss;
-	if (dTime > 0)
-		ss << L"FPS: " << (int)(1.f / dTime);
-	else
-		ss << L"FPS: 0";
-	mpFont->DrawString(mpSpriteBatch, ss.str().c_str(), Vector2(10, 550), Colours::White, 0, Vector2(0, 0), Vector2(0.5f, 0.5f));
+		wstringstream ss;
+		if (dTime > 0)
+			ss << L"FPS: " << (int)(1.f / dTime);
+		else
+			ss << L"FPS: 0";
+		mpFont->DrawString(mpSpriteBatch, ss.str().c_str(), Vector2(10, 10), Colours::Black, 0, Vector2(0, 0), Vector2(1.f, 1.f));
 
 	mpSpriteBatch->End();
 
