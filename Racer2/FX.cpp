@@ -413,7 +413,7 @@ void MyFX::Render(Model& model, ID3D11DeviceContext *pD3DContext, MaterialExt* p
 	pD3DContext->VSSetShader(mpVS, nullptr, 0);
 
 	Matrix w;
-	model.GetWorldMatrix(w);
+	model.GetOffsetWorldMatrix(w);
 	SetPerObjConsts(pD3DContext, w);
 
 	Mesh& mesh = model.GetMesh();

@@ -22,3 +22,9 @@ void Model::GetWorldMatrix(DirectX::SimpleMath::Matrix& w)
 		Matrix::CreateTranslation(mPosition);
 }
 
+void Model::GetOffsetWorldMatrix(DirectX::SimpleMath::Matrix& w)
+{
+	w = Matrix::CreateTranslation(mPosition) *
+		Matrix::CreateScale(mScale) * Matrix::CreateRotationX(mRotation.x) *
+		Matrix::CreateRotationY(mRotation.y) * Matrix::CreateRotationZ(mRotation.z);
+}

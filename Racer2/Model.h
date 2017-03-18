@@ -19,6 +19,7 @@ public:
 	DirectX::SimpleMath::Vector3& GetScale() { return mScale; }
 	DirectX::SimpleMath::Vector3& GetRotation() { return mRotation; }
 	void GetWorldMatrix(DirectX::SimpleMath::Matrix& w);
+	void GetOffsetWorldMatrix(DirectX::SimpleMath::Matrix& w);
 	Mesh& GetMesh() {
 		assert(mpMesh);
 		return *mpMesh;

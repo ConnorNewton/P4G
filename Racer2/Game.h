@@ -32,12 +32,16 @@ public:
 
 	
 	//camera
-	const DirectX::SimpleMath::Vector3 mDefCamPos = DirectX::SimpleMath::Vector3(0, 0.5f, -5);
-	DirectX::SimpleMath::Vector3 mCamPos = DirectX::SimpleMath::Vector3(5, 4, -6);
+	DirectX::SimpleMath::Vector3 mCamPos = DirectX::SimpleMath::Vector3(0, 0, -8);
+	DirectX::SimpleMath::Vector3 mCamAngle = DirectX::SimpleMath::Vector3(0, 1, 0);
+	DirectX::SimpleMath::Vector3 mCarRot = DirectX::SimpleMath::Vector3(0, 0, 0);
+	DirectX::SimpleMath::Vector3 mCarPos = DirectX::SimpleMath::Vector3(0, -5, 5);
+
 	//ensure each mesh is loaded and release exactly once
 	MeshManager mMeshMgr;
 	//game models that reference meshes
 	Model mCar;
+	Model mCar2;
 
 	//handy rendering state
 	FX::MyFX mFX;
@@ -74,7 +78,3 @@ private:
 };
 
 #endif
-
-
-
-

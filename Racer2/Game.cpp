@@ -31,12 +31,19 @@ void Game::Load()
 	mLoadData.loadedSoFar++;
 
 	Mesh& ecar = mMeshMgr.CreateMesh("ferrari");
-	ecar.CreateFrom("data/ferrari.x", gd3dDevice, mFX.mCache);
+	ecar.CreateFrom("data/lamborghini.x", gd3dDevice, mFX.mCache);
 	mCar.Initialise(ecar);
-	mCar.GetPosition() = Vector3(0, -2, 6);
-	mCar.GetRotation() = Vector3(0, (90 * PI / 180), 0);
 	mCar.GetMesh().GetSubMesh(1).material.gfxData.Set(Vector4(1,1,1,1), Vector4(1,1,1,1), Vector4(0.125f, 0.125f, 0.05f, 5));  //body has a touch of speculr shinyness
 	mCar.GetMesh().GetSubMesh(0).material.gfxData.Set(Vector4(1, 1, 1, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1));  //tyres are not shiny!
+	mLoadData.loadedSoFar++;
+
+	Mesh& ecar2 = mMeshMgr.CreateMesh("anchor");
+	ecar2.CreateFrom("data/ferrari.x", gd3dDevice, mFX.mCache);
+	mCar2.Initialise(ecar2);
+	mCar2.GetPosition() = Vector3(0, 0, 12);
+	mCar2.GetRotation() = Vector3(0, 0, 0);
+	mCar2.GetMesh().GetSubMesh(1).material.gfxData.Set(Vector4(1, 1, 1, 1), Vector4(1, 1, 1, 1), Vector4(0.125f, 0.125f, 0.05f, 5));  //body has a touch of specular shinyness
+	mCar2.GetMesh().GetSubMesh(0).material.gfxData.Set(Vector4(1, 1, 1, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1));  //tyres are not shiny!
 	mLoadData.loadedSoFar++;
 }
 
@@ -111,20 +118,12 @@ void Game::Update(float dTime)
 	mGamepad.Update();
 	GetIAudioMgr()->Update();
 
-	const float camInc = 10.f * dTime;
+	const float rotInc = 100.f * dTime;
 
 	if (mMKInput.IsPressed(VK_A))
-			mCamPos.y += camInc;
-	else if(mMKInput.IsPressed(VK_Z))
-			mCamPos.y -= camInc;
+		mCarRot.z -= rotInc * (PI / 180);
 	else if (mMKInput.IsPressed(VK_D))
-			mCamPos.x -= camInc;
-	else if (mMKInput.IsPressed(VK_F))
-			mCamPos.x += camInc;
-	else if (mMKInput.IsPressed(VK_W))
-			mCamPos.z += camInc;
-	else if (mMKInput.IsPressed(VK_S))
-			mCamPos.z -= camInc;
+		mCarRot.z += rotInc * (PI / 180);
 
 	if (mLoadData.running)
 		return;
@@ -155,14 +154,19 @@ void Game::Render(float dTime)
 
 	FX::SetPerFrameConsts(gd3dImmediateContext, mCamPos);
 
-	CreateProjectionMatrix(FX::GetProjectionMatrix(), 0.25f*PI, GetAspectRatio(), 1, 1000.f);
+	CreateProjectionMatrix(FX::GetProjectionMatrix(), 0.375f*PI, GetAspectRatio(), 1, 1000.f);
 
 
-	CreateViewMatrix(FX::GetViewMatrix(), Vector3(0, 5, -10), Vector3(0, 3.25f, 0), Vector3(0, 1, 0));
 
+	CreateViewMatrix(FX::GetViewMatrix(), mCamPos, Vector3(0, 0, 0), mCamAngle);
+	
+	mCamAngle.x = sin(-mCarRot.z);
+	mCamAngle.y = cos(-mCarRot.z);
+	mCar.GetRotation() = mCarRot;
+	mCar.GetPosition() = mCarPos;
 	mFX.Render(mCar, gd3dImmediateContext);
-
-
+	mFX.Render(mCar2, gd3dImmediateContext);
+	
 	CommonStates state(gd3dDevice);
 	mpSpriteBatch->Begin(SpriteSortMode_Deferred, state.NonPremultiplied());
 
@@ -197,9 +201,6 @@ LRESULT Game::WindowsMssgHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPar
 		case 'Q':
 			PostQuitMessage(0);
 			return 0;
-		case ' ':
-			mCamPos = mDefCamPos;
-			break;
 		}
 	case WM_INPUT:
 			mMKInput.MessageEvent((HRAWINPUT)lParam);
