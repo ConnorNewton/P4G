@@ -22,6 +22,8 @@ void Game::OnResize(int screenWidth, int screenHeight)
 {
 	
 	OnResize_Default(screenWidth, screenHeight);
+
+	scoreX = screenWidth - 140;
 }
 
 
@@ -31,18 +33,19 @@ void Game::Load()
 	mLoadData.loadedSoFar++;
 
 	Mesh& ecar = mMeshMgr.CreateMesh("ferrari");
-	ecar.CreateFrom("data/lamborghini.x", gd3dDevice, mFX.mCache);
+	ecar.CreateFrom("data/Lamborghini.x", gd3dDevice, mFX.mCache);
 	mCar.Initialise(ecar);
+	mCar.GetScale()= Vector3(0.5f, 0.5f, 0.5f);
 	mCar.GetMesh().GetSubMesh(1).material.gfxData.Set(Vector4(1,1,1,1), Vector4(1,1,1,1), Vector4(0.125f, 0.125f, 0.05f, 5));  //body has a touch of speculr shinyness
 	mCar.GetMesh().GetSubMesh(0).material.gfxData.Set(Vector4(1, 1, 1, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1));  //tyres are not shiny!
 	mLoadData.loadedSoFar++;
 
-	Mesh& ecar2 = mMeshMgr.CreateMesh("anchor");
-	ecar2.CreateFrom("data/ferrari.x", gd3dDevice, mFX.mCache);
+	Mesh& ecar2 = mMeshMgr.CreateMesh("tunnel");
+	ecar2.CreateFrom("data/Single_Long.fbx", gd3dDevice, mFX.mCache);
 	mCar2.Initialise(ecar2);
-	mCar2.GetPosition() = Vector3(0, 0, 12);
-	mCar2.GetRotation() = Vector3(0, 0, 0);
-	mCar2.GetMesh().GetSubMesh(1).material.gfxData.Set(Vector4(1, 1, 1, 1), Vector4(1, 1, 1, 1), Vector4(0.125f, 0.125f, 0.05f, 5));  //body has a touch of specular shinyness
+	mCar2.GetPosition() = Vector3(0, 0, 10);
+	mCar2.GetScale() = Vector3(1.5f, 1.5f, 8.0f);
+	//mCar.GetMesh().GetSubMesh(1).material.gfxData.Set(Vector4(1,1,1,1), Vector4(1,1,1,1), Vector4(0.125f, 0.125f, 0.05f, 5));  //body has a touch of speculr shinyness
 	mCar2.GetMesh().GetSubMesh(0).material.gfxData.Set(Vector4(1, 1, 1, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1));  //tyres are not shiny!
 	mLoadData.loadedSoFar++;
 }
@@ -82,7 +85,9 @@ void Game::Initialise()
 	mFX.Init(gd3dDevice);
 
 
-	FX::SetupDirectionalLight(0, true, Vector3(-0.7f, -0.7f, 0.7f), Vector3(0.9f, 0.85f, 0.85f), Vector3(0.1f, 0.1f, 0.1f), Vector3(1, 1, 1));
+	/*FX::SetupDirectionalLight(0, true, Vector3(-0.7f, -0.7f, 0.7f), Vector3(0.9f, 0.85f, 0.85f), Vector3(0.1f, 0.1f, 0.1f), Vector3(1, 1, 1));*/
+	FX::SetupDirectionalLight(0, true, Vector3(0.2f, 0.2f, 1), Vector3(0.9f, 0.85f, 0.85f), Vector3(0.3f, 0.3f, 0.3f), Vector3(1, 1, 1));
+
 
 	mpSpriteBatch = new SpriteBatch(gd3dImmediateContext);
 	assert(mpSpriteBatch);
@@ -132,7 +137,7 @@ void Game::Update(float dTime)
 	mCamPos.z += mGamepad.GetState(0).leftStickY * dTime;
 	mCamPos.y += mGamepad.GetState(0).rightStickY * dTime;
 
-	//mCar.GetRotation().y = GetClock();
+	timeAlive += dTime;
 }
 
 
@@ -150,15 +155,15 @@ void Game::Render(float dTime)
 		return;
 	}
 
-	BeginRender(Vector4( 0.5f, 0.5f, 0.5f, 1.0f ));
+	BeginRender(Colours::Black);
 
 	FX::SetPerFrameConsts(gd3dImmediateContext, mCamPos);
 
 	CreateProjectionMatrix(FX::GetProjectionMatrix(), 0.375f*PI, GetAspectRatio(), 1, 1000.f);
-
-
-
 	CreateViewMatrix(FX::GetViewMatrix(), mCamPos, Vector3(0, 0, 0), mCamAngle);
+
+	//CreateProjectionMatrix(FX::GetProjectionMatrix(), 0.25f*PI, GetAspectRatio(), 1, 1000.f);
+	//CreateViewMatrix(FX::GetViewMatrix(), Vector3(0, 0, -6), Vector3(0, 0, 0), Vector3(0, 1, 0));
 	
 	mCamAngle.x = sin(-mCarRot.z);
 	mCamAngle.y = cos(-mCarRot.z);
@@ -167,16 +172,20 @@ void Game::Render(float dTime)
 	mFX.Render(mCar, gd3dImmediateContext);
 	mFX.Render(mCar2, gd3dImmediateContext);
 	
+
+	//FX::SetupSpotLight(1, true, (mCarPos + Vector3(0, 8, 0)), Vector3(0, 0, 1), Vector3(0.9f, 0.85f, 0.85f), Vector3(1.f, 0.3f, 0.3f), Vector3(1, 1, 1), 60, 0.1f, D2R(1), D2R(50));
+	FX::SetupSpotLight(1, true, (mCarPos + Vector3(0, 8, 0)), Vector3(0, -1, 0), Vector3(0.4f, 0.4f, 0.4f), Vector3(0.1f, 0.1f, 0.1f), Vector3(0, 0, 0), 10, 0.05f, D2R(1), D2R(20));
 	CommonStates state(gd3dDevice);
 	mpSpriteBatch->Begin(SpriteSortMode_Deferred, state.NonPremultiplied());
 
 	//general messages
 		wstringstream ss;
-		if (dTime > 0)
-			ss << L"FPS: " << (int)(1.f / dTime);
-		else
-			ss << L"FPS: 0";
-		mpFont->DrawString(mpSpriteBatch, ss.str().c_str(), Vector2(10, 10), Colours::Black, 0, Vector2(0, 0), Vector2(1.f, 1.f));
+		ss << L"Survived for: " << fixed << setprecision(1) << timeAlive;
+		mpFont->DrawString(mpSpriteBatch, ss.str().c_str(), Vector2(10, 10), Colours::Green, 0, Vector2(0, 0), Vector2(1.f, 1.f));
+
+		wstringstream ssScore;
+		ssScore << L"Score: " << fixed << setprecision(0) << timeAlive * 10;
+		mpFont->DrawString(mpSpriteBatch, ssScore.str().c_str(), Vector2(scoreX, 10), Colours::Green, 0, Vector2(0, 0), Vector2(1.f, 1.f));
 
 	mpSpriteBatch->End();
 

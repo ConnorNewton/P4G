@@ -29,13 +29,13 @@ public:
 	void Release();
 	//message handling
 	LRESULT WindowsMssgHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
+	float scoreX;
 	
 	//camera
 	DirectX::SimpleMath::Vector3 mCamPos = DirectX::SimpleMath::Vector3(0, 0, -8);
 	DirectX::SimpleMath::Vector3 mCamAngle = DirectX::SimpleMath::Vector3(0, 1, 0);
 	DirectX::SimpleMath::Vector3 mCarRot = DirectX::SimpleMath::Vector3(0, 0, 0);
-	DirectX::SimpleMath::Vector3 mCarPos = DirectX::SimpleMath::Vector3(0, -5, 5);
+	DirectX::SimpleMath::Vector3 mCarPos = DirectX::SimpleMath::Vector3(0, -7, 0.2f);
 
 	//ensure each mesh is loaded and release exactly once
 	MeshManager mMeshMgr;
@@ -50,6 +50,7 @@ private:
 	Game& operator=(const Game&) = delete;
 	Game(const Game& m) = delete;
 
+	float timeAlive = 0.0;
 	//load meshes
 	void Load();
 	//display a message
