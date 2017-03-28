@@ -32,11 +32,11 @@ public:
 	float scoreX;
 	
 	//camera
-	DirectX::SimpleMath::Vector3 mCamPos = DirectX::SimpleMath::Vector3(0, 0, -8);
+	DirectX::SimpleMath::Vector3 mCamPos   = DirectX::SimpleMath::Vector3(0, 0, -55);
 	DirectX::SimpleMath::Vector3 mCamAngle = DirectX::SimpleMath::Vector3(0, 1, 0);
 
 	DirectX::SimpleMath::Vector3 mCarRot = DirectX::SimpleMath::Vector3(0, 0, 0);
-	DirectX::SimpleMath::Vector3 mCarPos = DirectX::SimpleMath::Vector3(0, -7, 0.2f);
+	DirectX::SimpleMath::Vector3 mCarPos = DirectX::SimpleMath::Vector3(0, -9, 0);
 
 	//ensure each mesh is loaded and release exactly once
 	MeshManager mMeshMgr;

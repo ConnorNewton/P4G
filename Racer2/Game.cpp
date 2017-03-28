@@ -35,7 +35,7 @@ void Game::Load()
 	Mesh& ecar = mMeshMgr.CreateMesh("ferrari");
 	ecar.CreateFrom("data/Lamborghini.x", gd3dDevice, mFX.mCache);
 	mCar.Initialise(ecar);
-	mCar.GetScale()= Vector3(0.5f, 0.5f, 0.5f);
+	mCar.GetScale()= Vector3(3.f, 3.f, 3.f);
 	mCar.GetMesh().GetSubMesh(1).material.gfxData.Set(Vector4(1,1,1,1), Vector4(1,1,1,1), Vector4(0.125f, 0.125f, 0.05f, 5));  //body has a touch of speculr shinyness
 	mCar.GetMesh().GetSubMesh(0).material.gfxData.Set(Vector4(1, 1, 1, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1));  //tyres are not shiny!
 	mLoadData.loadedSoFar++;
@@ -43,10 +43,10 @@ void Game::Load()
 	Mesh& ecar2 = mMeshMgr.CreateMesh("tunnel");
 	ecar2.CreateFrom("data/finalTunnel.fbx", gd3dDevice, mFX.mCache);
 	mCar2.Initialise(ecar2);
-	mCar2.GetPosition() = Vector3(0, 0, 300);
+	mCar2.GetPosition() = Vector3(0, 0, 295);
 	mCar2.GetRotation() = Vector3(0, 0,0);  // D2R(180)
-	mCar2.GetScale() = Vector3(1.5f, 1.5f, 8.0f);
-	mCar2.GetMesh().GetSubMesh(0).material.gfxData.Set(Vector4(1,1,1,1), Vector4(1,1,1,1), Vector4(0.125f, 0.125f, 0.05f, 5));  //body has a touch of speculr shinyness
+	mCar2.GetScale() = Vector3(1.f, 1.f, 9.0f);
+	//mCar2.GetMesh().GetSubMesh(0).material.gfxData.Set(Vector4(1,1,1,1), Vector4(1,1,1,1), Vector4(0.125f, 0.125f, 0.05f, 5));  //body has a touch of speculr shinyness
 	//mCar2.GetMesh().GetSubMesh(0).material.gfxData.Set(Vector4(1, 1, 1, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1));  //tyres are not shiny!
 	mLoadData.loadedSoFar++;
 }
@@ -175,7 +175,7 @@ void Game::Render(float dTime)
 	
 
 	//FX::SetupSpotLight(1, true, (mCarPos + Vector3(0, 8, 0)), Vector3(0, 0, 1), Vector3(0.9f, 0.85f, 0.85f), Vector3(1.f, 0.3f, 0.3f), Vector3(1, 1, 1), 60, 0.1f, D2R(1), D2R(50));
-	FX::SetupSpotLight(1, true, (mCarPos + Vector3(0, 8, 0)), Vector3(0, -1, 0), Vector3(0.4f, 0.4f, 0.4f), Vector3(0.1f, 0.1f, 0.1f), Vector3(0, 0, 0), 10, 0.05f, D2R(1), D2R(20));
+	FX::SetupSpotLight(1, true, (mCarPos + Vector3(0, 8, 0)), Vector3(0, 0, 1), Vector3(0.4f, 0.4f, 0.4f), Vector3(0.1f, 0.1f, 0.1f), Vector3(0, 0, 0), 10, 0.05f, D2R(1), D2R(20));
 	CommonStates state(gd3dDevice);
 	mpSpriteBatch->Begin(SpriteSortMode_Deferred, state.NonPremultiplied());
 
@@ -198,7 +198,7 @@ void Game::Render(float dTime)
 
 LRESULT Game::WindowsMssgHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	const float camInc = 20.f * GetElapsedSec();
+	const float camInc = 500.f * GetElapsedSec();
 	//do something game specific here
 	switch (msg)
 	{
@@ -211,6 +211,27 @@ LRESULT Game::WindowsMssgHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPar
 		case 'Q':
 			PostQuitMessage(0);
 			return 0;
+		case 'u':
+			mCamPos.x -= camInc;
+			break;
+		case 'j':
+			mCamPos.x += camInc;
+			break;
+		case 'i':
+			mCamPos.y += camInc;
+			break;
+		case 'k':
+			mCamPos.y -= camInc;
+			break;
+		case 'o':
+			mCamPos.z += camInc;
+			break;
+		case 'l':
+			mCamPos.z -= camInc;
+			break;
+		case 'r':
+			mCamPos = Vector3(0, 0, -55);
+			break;
 		}
 	case WM_INPUT:
 			mMKInput.MessageEvent((HRAWINPUT)lParam);
