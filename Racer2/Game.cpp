@@ -49,6 +49,14 @@ void Game::Load()
 	//mCar2.GetMesh().GetSubMesh(0).material.gfxData.Set(Vector4(1,1,1,1), Vector4(1,1,1,1), Vector4(0.125f, 0.125f, 0.05f, 5));  //body has a touch of speculr shinyness
 	//mCar2.GetMesh().GetSubMesh(0).material.gfxData.Set(Vector4(1, 1, 1, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1));  //tyres are not shiny!
 	mLoadData.loadedSoFar++;
+
+	Mesh& obsMesh = BuildCube(mMeshMgr);
+	for (int i = 0; i < 5; ++i)
+	{
+		Obstacles[i].ObsModel.Initialise(obsMesh);
+		Obstacles[i].ObsModel.GetScale() = Vector3(1, 1, 1);
+	}
+	mLoadData.loadedSoFar++;
 }
 
 void Game::LoadDisplay(float dTime)
@@ -85,7 +93,7 @@ void Game::Initialise()
 {
 	mFX.Init(gd3dDevice);
 
-
+	int rotSlots[6] = { 0, 60, 120, 180, 240, 300 };
 	/*FX::SetupDirectionalLight(0, true, Vector3(-0.7f, -0.7f, 0.7f), Vector3(0.9f, 0.85f, 0.85f), Vector3(0.1f, 0.1f, 0.1f), Vector3(1, 1, 1));*/
 	FX::SetupDirectionalLight(0, true, Vector3(0.2f, 0.2f, 1), Vector3(0.9f, 0.85f, 0.85f), Vector3(0.3f, 0.3f, 0.3f), Vector3(1, 1, 1));
 
@@ -139,6 +147,66 @@ void Game::Update(float dTime)
 	mCamPos.y += mGamepad.GetState(0).rightStickY * dTime;
 
 	timeAlive += dTime;
+
+	if (speed < 50)
+		speed += dTime * 10;
+	else
+		speed += dTime / 2;
+
+	if ((speed > 50) && (spawnTimer <= 0))
+	{
+		switch (lastObs)
+		{
+			case 0:
+			{
+				Obstacles[1].pos = DirectX::SimpleMath::Vector3(0, 0, 100);
+				Obstacles[1].rotSlot = rand() % 6;
+				Obstacles[1].active = true;
+				lastObs = 1;
+			}
+			break;
+			case 1:
+			{
+				Obstacles[2].pos = DirectX::SimpleMath::Vector3(0, 0, 100);
+				Obstacles[2].rotSlot = rand() % 6;
+				Obstacles[2].active = true;
+				lastObs = 2;
+			}
+			break;
+			case 2:
+			{
+				Obstacles[3].pos = DirectX::SimpleMath::Vector3(0, 0, 100);
+				Obstacles[3].rotSlot = rand() % 6;
+				Obstacles[3].active = true;
+				lastObs = 3;
+			}
+			break;
+			case 3:
+			{
+				Obstacles[4].pos = DirectX::SimpleMath::Vector3(0, 0, 100);
+				Obstacles[4].rotSlot = rand() % 6;
+				Obstacles[4].active = true;
+				lastObs = 4;
+			}
+			break;
+			case 4:
+			{
+				Obstacles[0].pos = DirectX::SimpleMath::Vector3(0, 0, 100);
+				Obstacles[0].rotSlot = rand() % 6;
+				Obstacles[0].active = true;
+				lastObs = 0;
+			}
+			break;
+		}
+	}
+
+	for (int i = 0; i < 5; i++)
+	{
+		if (Obstacles[i].active) {
+			Obstacles[i].pos += DirectX::SimpleMath::Vector3(0, 0, -(speed/3)*dTime);
+			Obstacles[i].ObsModel.GetRotation() = DirectX::SimpleMath::Vector3(0, 0, D2R(rotSlots[Obstacles[i].rotSlot]));
+		}
+	}
 }
 
 
@@ -172,7 +240,13 @@ void Game::Render(float dTime)
 	mCar.GetPosition() = mCarPos;
 	mFX.Render(mCar, gd3dImmediateContext);
 	mFX.Render(mCar2, gd3dImmediateContext);
+	for (int i = 0; i < 5; i++)
+	{
+		if (Obstacles[i].active)
+			mFX.Render(Obstacles[i].ObsModel, gd3dImmediateContext);
+	}
 	
+
 
 	//FX::SetupSpotLight(1, true, (mCarPos + Vector3(0, 8, 0)), Vector3(0, 0, 1), Vector3(0.9f, 0.85f, 0.85f), Vector3(1.f, 0.3f, 0.3f), Vector3(1, 1, 1), 60, 0.1f, D2R(1), D2R(50));
 	FX::SetupSpotLight(1, true, (mCarPos + Vector3(0, 8, 0)), Vector3(0, 0, 1), Vector3(0.4f, 0.4f, 0.4f), Vector3(0.1f, 0.1f, 0.1f), Vector3(0, 0, 0), 10, 0.05f, D2R(1), D2R(20));
@@ -240,4 +314,3 @@ LRESULT Game::WindowsMssgHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPar
 	//default message handling (resize window, full screen, etc)
 	return DefaultMssgHandler(hwnd, msg, wParam, lParam);
 }
-

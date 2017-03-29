@@ -9,6 +9,7 @@
 #include "FX.h"
 #include "SpriteFont.h"
 #include "Input.h"
+#include "Obstacle.h"
 
 //wrap up common behaviors, initialization+shutdown
 class Game
@@ -52,6 +53,9 @@ private:
 	Game(const Game& m) = delete;
 
 	float timeAlive = 0.0;
+	float speed = 0.0;
+	int lastObs = 0;
+
 	//load meshes
 	void Load();
 	//display a message
@@ -62,6 +66,9 @@ private:
 	DirectX::SpriteBatch *mpSpriteBatch = nullptr;
 	DirectX::SpriteFont *mpFont = nullptr, *mpFont2 = nullptr;
 	
+	int rotSlots[6];
+	float spawnTimer;
+
 	//loading handler
 	struct LoadData
 	{
@@ -74,6 +81,16 @@ private:
 		//is the loader active
 		bool running = false;
 	};
+	struct Obstacle
+	{
+		DirectX::SimpleMath::Vector3 pos = DirectX::SimpleMath::Vector3(100, 0, 0);
+		int rotSlot = 0;
+		bool active = false;
+		Model ObsModel;
+	};
+
+	Obstacle Obstacles[5];
+
 	LoadData mLoadData;
 	MouseAndKeys mMKInput;
 	Gamepad mGamepad;
