@@ -43,9 +43,9 @@ void Game::Load()
 	Mesh& ecar2 = mMeshMgr.CreateMesh("tunnel");
 	ecar2.CreateFrom("data/finalTunnel.fbx", gd3dDevice, mFX.mCache);
 	mCar2.Initialise(ecar2);
-	mCar2.GetPosition() = Vector3(0, 0, 295);
+	mCar2.GetPosition() = Vector3(0, 0, 290);
 	mCar2.GetRotation() = Vector3(0, 0,0);  // D2R(180)
-	mCar2.GetScale() = Vector3(1.f, 1.f, 9.0f);
+	mCar2.GetScale() = Vector3(1.f, 1.f, 5.f);
 	//mCar2.GetMesh().GetSubMesh(0).material.gfxData.Set(Vector4(1,1,1,1), Vector4(1,1,1,1), Vector4(0.125f, 0.125f, 0.05f, 5));  //body has a touch of speculr shinyness
 	//mCar2.GetMesh().GetSubMesh(0).material.gfxData.Set(Vector4(1, 1, 1, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1));  //tyres are not shiny!
 	mLoadData.loadedSoFar++;
