@@ -50,11 +50,14 @@ void Game::Load()
 	//mCar2.GetMesh().GetSubMesh(0).material.gfxData.Set(Vector4(1, 1, 1, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1));  //tyres are not shiny!
 	mLoadData.loadedSoFar++;
 
-	Mesh& obsMesh = BuildCube(mMeshMgr);
+	//Mesh& obsMesh = BuildCube(mMeshMgr);
+	Mesh& obsMesh = mMeshMgr.CreateMesh("ferrari");
+	obsMesh.CreateFrom("data/Lamborghini.x", gd3dDevice, mFX.mCache);
 	for (int i = 0; i < 5; ++i)
 	{
 		Obstacles[i].ObsModel.Initialise(obsMesh);
 		Obstacles[i].ObsModel.GetScale() = Vector3(1, 1, 1);
+
 	}
 	mLoadData.loadedSoFar++;
 }
@@ -91,9 +94,10 @@ void Game::LoadDisplay(float dTime)
 
 void Game::Initialise()
 {
+	//srand(time(NULL));
 	mFX.Init(gd3dDevice);
 
-	int rotSlots[6] = { 0, 60, 120, 180, 240, 300 };
+	int rotSlots[] = { 0, 300, 60, 180, 120, 240, 162, 25, 270, 183, 10, 285, 340 };
 	/*FX::SetupDirectionalLight(0, true, Vector3(-0.7f, -0.7f, 0.7f), Vector3(0.9f, 0.85f, 0.85f), Vector3(0.1f, 0.1f, 0.1f), Vector3(1, 1, 1));*/
 	FX::SetupDirectionalLight(0, true, Vector3(0.2f, 0.2f, 1), Vector3(0.9f, 0.85f, 0.85f), Vector3(0.3f, 0.3f, 0.3f), Vector3(1, 1, 1));
 
@@ -147,7 +151,7 @@ void Game::Update(float dTime)
 	mCamPos.y += mGamepad.GetState(0).rightStickY * dTime;
 
 	timeAlive += dTime;
-
+	spawnTimer -= dTime;
 	if (speed < 50)
 		speed += dTime * 10;
 	else
@@ -157,55 +161,84 @@ void Game::Update(float dTime)
 	{
 		switch (lastObs)
 		{
-			case 0:
+		case 0:
+		{
+			if (!Obstacles[1].active)
 			{
-				Obstacles[1].pos = DirectX::SimpleMath::Vector3(0, 0, 100);
-				Obstacles[1].rotSlot = rand() % 6;
+				Obstacles[1].pos = DirectX::SimpleMath::Vector3(0, -7, 100);
+				Obstacles[1].ObsModel.GetRotation() = DirectX::SimpleMath::Vector3(0, 0, D2R(rotSlots[(int)(rand() % (13 + 1))]));
 				Obstacles[1].active = true;
 				lastObs = 1;
 			}
-			break;
-			case 1:
+
+		}
+		break;
+		case 1:
+		{
+			if (!Obstacles[2].active)
 			{
-				Obstacles[2].pos = DirectX::SimpleMath::Vector3(0, 0, 100);
-				Obstacles[2].rotSlot = rand() % 6;
+				Obstacles[2].ObsModel.GetRotation() = DirectX::SimpleMath::Vector3(0, 0, 180);
+				Obstacles[2].pos = DirectX::SimpleMath::Vector3(0, -7, 100);
+				Obstacles[2].ObsModel.GetRotation() = DirectX::SimpleMath::Vector3(0, 0, D2R(rotSlots[(int)(rand() % (13 + 1))]));
 				Obstacles[2].active = true;
 				lastObs = 2;
 			}
-			break;
-			case 2:
+		}
+		break;
+		case 2:
+		{
+			if (!Obstacles[3].active)
 			{
-				Obstacles[3].pos = DirectX::SimpleMath::Vector3(0, 0, 100);
-				Obstacles[3].rotSlot = rand() % 6;
+				Obstacles[3].pos = DirectX::SimpleMath::Vector3(0,-7, 100);
+				Obstacles[3].ObsModel.GetRotation() = DirectX::SimpleMath::Vector3(0, 0, D2R(rotSlots[(int)(rand() % (13 + 1))]));
 				Obstacles[3].active = true;
 				lastObs = 3;
 			}
-			break;
-			case 3:
+		}
+		break;
+		case 3:
+		{
+			if (!Obstacles[4].active)
 			{
-				Obstacles[4].pos = DirectX::SimpleMath::Vector3(0, 0, 100);
-				Obstacles[4].rotSlot = rand() % 6;
+				Obstacles[4].pos = DirectX::SimpleMath::Vector3(0, -7, 100);
+				Obstacles[4].ObsModel.GetRotation() = DirectX::SimpleMath::Vector3(0, 0, D2R(rotSlots[(int)(rand() % (13 + 1))]));
 				Obstacles[4].active = true;
 				lastObs = 4;
 			}
-			break;
-			case 4:
+		}
+		break;
+		case 4:
+		{
+			if (!Obstacles[0].active)
 			{
-				Obstacles[0].pos = DirectX::SimpleMath::Vector3(0, 0, 100);
-				Obstacles[0].rotSlot = rand() % 6;
+				Obstacles[0].pos = DirectX::SimpleMath::Vector3(0, -7, 100);
+				Obstacles[0].ObsModel.GetRotation() = DirectX::SimpleMath::Vector3(0, 0, D2R(rotSlots[(int)(rand() % (13 + 1))]));
 				Obstacles[0].active = true;
 				lastObs = 0;
 			}
-			break;
 		}
+		break;
+		}
+		spawnTimer = maxTimer;
 	}
+
 
 	for (int i = 0; i < 5; i++)
 	{
-		if (Obstacles[i].active) {
-			Obstacles[i].pos += DirectX::SimpleMath::Vector3(0, 0, -(speed/3)*dTime);
-			Obstacles[i].ObsModel.GetRotation() = DirectX::SimpleMath::Vector3(0, 0, D2R(rotSlots[Obstacles[i].rotSlot]));
+		if (Obstacles[i].active) 
+		{
+			if (Obstacles[i].pos.z > mCamPos.z)
+			{
+				Obstacles[i].pos.z -= 0.1;
+
+			}
+			else
+			{
+				Obstacles[i].active = false;
+			}
+
 		}
+		Obstacles[i].ObsModel.GetPosition() = Obstacles[i].pos;		//TRANSLATE ALL POSITIONS INTO ACTUAL TRANSFORMATIONS
 	}
 }
 

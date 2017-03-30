@@ -68,6 +68,7 @@ private:
 	
 	int rotSlots[6];
 	float spawnTimer;
+	float maxTimer = 1;
 
 	//loading handler
 	struct LoadData
