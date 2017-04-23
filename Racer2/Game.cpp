@@ -33,31 +33,41 @@ void Game::Load()
 	mLoadData.loadedSoFar++;
 
 	Mesh& ecar = mMeshMgr.CreateMesh("ferrari");
-	ecar.CreateFrom("data/Lamborghini.x", gd3dDevice, mFX.mCache);
+	ecar.CreateFrom("data/spaceShip/spaceShip.FBX", gd3dDevice, mFX.mCache);
 	mCar.Initialise(ecar);
-	mCar.GetScale()= Vector3(3.f, 3.f, 3.f);
-	mCar.GetMesh().GetSubMesh(1).material.gfxData.Set(Vector4(1,1,1,1), Vector4(1,1,1,1), Vector4(0.125f, 0.125f, 0.05f, 5));  //body has a touch of speculr shinyness
-	mCar.GetMesh().GetSubMesh(0).material.gfxData.Set(Vector4(1, 1, 1, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1));  //tyres are not shiny!
+	mCar.GetScale() = Vector3(0.5f, 0.5f, 0.5f);
+	//mCar.GetMesh().GetSubMesh(1).material.gfxData.Set(Vector4(1,1,1,1), Vector4(1,1,1,1), Vector4(0.125f, 0.125f, 0.05f, 5));  //body has a touch of speculr shinyness
+	//mCar.GetMesh().GetSubMesh(0).material.gfxData.Set(Vector4(1, 1, 1, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1));  //tyres are not shiny!
 	mLoadData.loadedSoFar++;
 
-	Mesh& ecar2 = mMeshMgr.CreateMesh("tunnel");
-	ecar2.CreateFrom("data/finalTunnel.fbx", gd3dDevice, mFX.mCache);
-	mCar2.Initialise(ecar2);
-	mCar2.GetPosition() = Vector3(0, 0, 290);
-	mCar2.GetRotation() = Vector3(0, 0,0);  // D2R(180)
-	mCar2.GetScale() = Vector3(1.f, 1.f, 5.f);
-	//mCar2.GetMesh().GetSubMesh(0).material.gfxData.Set(Vector4(1,1,1,1), Vector4(1,1,1,1), Vector4(0.125f, 0.125f, 0.05f, 5));  //body has a touch of speculr shinyness
-	//mCar2.GetMesh().GetSubMesh(0).material.gfxData.Set(Vector4(1, 1, 1, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1));  //tyres are not shiny!
+	// vvv Old car vvv
+
+	//Mesh& ecar = mMeshMgr.CreateMesh("ferrari");
+	//ecar.CreateFrom("data/ferrari.x", gd3dDevice, mFX.mCache);
+	//mCar.Initialise(ecar);
+	//mCar.GetScale()= Vector3(3.f, 3.f, 3.f);
+	//mCar.GetMesh().GetSubMesh(1).material.gfxData.Set(Vector4(1,1,1,1), Vector4(1,1,1,1), Vector4(0.125f, 0.125f, 0.05f, 5));  //body has a touch of speculr shinyness
+	//mCar.GetMesh().GetSubMesh(0).material.gfxData.Set(Vector4(1, 1, 1, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1));  //tyres are not shiny!
+	//mLoadData.loadedSoFar++;
+
+	Mesh& etunnel = mMeshMgr.CreateMesh("tunnel");
+	etunnel.CreateFrom("data/finalTunnel.fbx", gd3dDevice, mFX.mCache);
+	mTunnel.Initialise(etunnel);
+	mTunnel.GetPosition() = Vector3(0, 0, 290);
+	mTunnel.GetRotation() = Vector3(0, 0, 0);
+	mTunnel.GetScale() = Vector3(1.f, 1.f, 5.f);
+	mTunnel.GetMesh().GetSubMesh(0).material.gfxData.Set(Vector4(1, 1, 1, 1), Vector4(1, 1, 1, 1), Vector4(0.125f, 0.125f, 0.05f, 5));  //body has a touch of speculr shinyness
 	mLoadData.loadedSoFar++;
 
-	//Mesh& obsMesh = BuildCube(mMeshMgr);
-	Mesh& obsMesh = mMeshMgr.CreateMesh("ferrari");
-	obsMesh.CreateFrom("data/Lamborghini.x", gd3dDevice, mFX.mCache);
+	Mesh& obsMesh = BuildCube(mMeshMgr);
+	//Mesh& obsMesh = mMeshMgr.CreateMesh("ferrari");
+	//obsMesh.CreateFrom("data/Lamborghini.x", gd3dDevice, mFX.mCache);
 	for (int i = 0; i < 5; ++i)
 	{
 		Obstacles[i].ObsModel.Initialise(obsMesh);
-		Obstacles[i].ObsModel.GetScale() = Vector3(1, 1, 1);
-
+		Obstacles[i].ObsModel.GetScale() = Vector3(3, 3, 3);
+		//Obstacles[i].ObsModel.GetMesh().GetSubMesh(1).material.gfxData.Set(Vector4(1, 0.2f, 0.2f, 1), Vector4(1, 1, 1, 1), Vector4(0.125f, 0.125f, 0.05f, 5));  //body has a touch of speculr shinyness
+		//Obstacles[i].ObsModel.GetMesh().GetSubMesh(0).material.gfxData.Set(Vector4(1, 0.2f, 0.2f, 1), Vector4(1, 1, 1, 1), Vector4(0, 0, 0, 1));  //tyres are not shiny!
 	}
 	mLoadData.loadedSoFar++;
 }
@@ -97,10 +107,9 @@ void Game::Initialise()
 	//srand(time(NULL));
 	mFX.Init(gd3dDevice);
 
-	int rotSlots[] = { 0, 300, 60, 180, 120, 240, 162, 25, 270, 183, 10, 285, 340 };
 	/*FX::SetupDirectionalLight(0, true, Vector3(-0.7f, -0.7f, 0.7f), Vector3(0.9f, 0.85f, 0.85f), Vector3(0.1f, 0.1f, 0.1f), Vector3(1, 1, 1));*/
-	FX::SetupDirectionalLight(0, true, Vector3(0.2f, 0.2f, 1), Vector3(0.9f, 0.85f, 0.85f), Vector3(0.3f, 0.3f, 0.3f), Vector3(1, 1, 1));
-
+	
+	FX::SetupSpotLight(1, true, Vector3(0, 0, 675), Vector3(0, 0, -1), Vector3(0.8f, 0.8f, 0.8f), Vector3(0.8f, 0.8f, 0.8f), Vector3(0.8f, 0.8f, 0.8f), 775, 0.1f, D2R(1), D2R(12));
 
 	mpSpriteBatch = new SpriteBatch(gd3dImmediateContext);
 	assert(mpSpriteBatch);
@@ -136,7 +145,7 @@ void Game::Update(float dTime)
 	mGamepad.Update();
 	GetIAudioMgr()->Update();
 
-	const float rotInc = 100.f * dTime;
+	const float rotInc = 200.f * dTime;
 
 	if (mMKInput.IsPressed(VK_A))
 		mCarRot.z -= rotInc * (PI / 180);
@@ -165,8 +174,8 @@ void Game::Update(float dTime)
 		{
 			if (!Obstacles[1].active)
 			{
-				Obstacles[1].pos = DirectX::SimpleMath::Vector3(0, -7, 100);
-				Obstacles[1].ObsModel.GetRotation() = DirectX::SimpleMath::Vector3(0, 0, D2R(rotSlots[(int)(rand() % (13 + 1))]));
+				Obstacles[1].pos = DirectX::SimpleMath::Vector3(0, -9, 300);
+				Obstacles[1].ObsModel.GetRotation() = DirectX::SimpleMath::Vector3(0, 0, D2R(GetRandom(0, 359)));
 				Obstacles[1].active = true;
 				lastObs = 1;
 			}
@@ -178,8 +187,8 @@ void Game::Update(float dTime)
 			if (!Obstacles[2].active)
 			{
 				Obstacles[2].ObsModel.GetRotation() = DirectX::SimpleMath::Vector3(0, 0, 180);
-				Obstacles[2].pos = DirectX::SimpleMath::Vector3(0, -7, 100);
-				Obstacles[2].ObsModel.GetRotation() = DirectX::SimpleMath::Vector3(0, 0, D2R(rotSlots[(int)(rand() % (13 + 1))]));
+				Obstacles[2].pos = DirectX::SimpleMath::Vector3(0, -9, 300);
+				Obstacles[2].ObsModel.GetRotation() = DirectX::SimpleMath::Vector3(0, 0, mCarRot.z);
 				Obstacles[2].active = true;
 				lastObs = 2;
 			}
@@ -189,8 +198,8 @@ void Game::Update(float dTime)
 		{
 			if (!Obstacles[3].active)
 			{
-				Obstacles[3].pos = DirectX::SimpleMath::Vector3(0,-7, 100);
-				Obstacles[3].ObsModel.GetRotation() = DirectX::SimpleMath::Vector3(0, 0, D2R(rotSlots[(int)(rand() % (13 + 1))]));
+				Obstacles[3].pos = DirectX::SimpleMath::Vector3(0, -9, 300);
+				Obstacles[3].ObsModel.GetRotation() = DirectX::SimpleMath::Vector3(0, 0, D2R(GetRandom(0, 359)));
 				Obstacles[3].active = true;
 				lastObs = 3;
 			}
@@ -200,8 +209,8 @@ void Game::Update(float dTime)
 		{
 			if (!Obstacles[4].active)
 			{
-				Obstacles[4].pos = DirectX::SimpleMath::Vector3(0, -7, 100);
-				Obstacles[4].ObsModel.GetRotation() = DirectX::SimpleMath::Vector3(0, 0, D2R(rotSlots[(int)(rand() % (13 + 1))]));
+				Obstacles[4].pos = DirectX::SimpleMath::Vector3(0, -9, 300);
+				Obstacles[4].ObsModel.GetRotation() = DirectX::SimpleMath::Vector3(0, 0, mCarRot.z);
 				Obstacles[4].active = true;
 				lastObs = 4;
 			}
@@ -211,8 +220,8 @@ void Game::Update(float dTime)
 		{
 			if (!Obstacles[0].active)
 			{
-				Obstacles[0].pos = DirectX::SimpleMath::Vector3(0, -7, 100);
-				Obstacles[0].ObsModel.GetRotation() = DirectX::SimpleMath::Vector3(0, 0, D2R(rotSlots[(int)(rand() % (13 + 1))]));
+				Obstacles[0].pos = DirectX::SimpleMath::Vector3(0, -9, 300);
+				Obstacles[0].ObsModel.GetRotation() = DirectX::SimpleMath::Vector3(0, 0, D2R(GetRandom(0, 359)));
 				Obstacles[0].active = true;
 				lastObs = 0;
 			}
@@ -271,29 +280,31 @@ void Game::Render(float dTime)
 	mCamAngle.y = cos(-mCarRot.z);
 	mCar.GetRotation() = mCarRot;
 	mCar.GetPosition() = mCarPos;
+
 	mFX.Render(mCar, gd3dImmediateContext);
-	mFX.Render(mCar2, gd3dImmediateContext);
+	mFX.Render(mTunnel, gd3dImmediateContext);
+
 	for (int i = 0; i < 5; i++)
 	{
 		if (Obstacles[i].active)
 			mFX.Render(Obstacles[i].ObsModel, gd3dImmediateContext);
 	}
 	
+	
 
-
-	//FX::SetupSpotLight(1, true, (mCarPos + Vector3(0, 8, 0)), Vector3(0, 0, 1), Vector3(0.9f, 0.85f, 0.85f), Vector3(1.f, 0.3f, 0.3f), Vector3(1, 1, 1), 60, 0.1f, D2R(1), D2R(50));
-	FX::SetupSpotLight(1, true, (mCarPos + Vector3(0, 8, 0)), Vector3(0, 0, 1), Vector3(0.4f, 0.4f, 0.4f), Vector3(0.1f, 0.1f, 0.1f), Vector3(0, 0, 0), 10, 0.05f, D2R(1), D2R(20));
+	//FX::SetupSpotLight(1, true, (mCarPos + Vector3(0, 3, 0)), Vector3(0, 0, 1), Vector3(0.9f, 0.85f, 0.85f), Vector3(1.f, 0.3f, 0.3f), Vector3(1, 1, 1), 60, 0.1f, D2R(1), D2R(50));
+	//FX::SetupSpotLight(1, true, (mCarPos + Vector3(0, 8, 0)), Vector3(0, 0, 1), Vector3(0.4f, 0.4f, 0.4f), Vector3(0.1f, 0.1f, 0.1f), Vector3(0, 0, 0), 10, 0.05f, D2R(1), D2R(20));
 	CommonStates state(gd3dDevice);
 	mpSpriteBatch->Begin(SpriteSortMode_Deferred, state.NonPremultiplied());
 
 	//general messages
 		wstringstream ss;
-		ss << L"Survived for: " << fixed << setprecision(1) << timeAlive;
-		mpFont->DrawString(mpSpriteBatch, ss.str().c_str(), Vector2(10, 10), Colours::Green, 0, Vector2(0, 0), Vector2(1.f, 1.f));
+		ss << L"Time: " << fixed << setprecision(1) << timeAlive;
+		mpFont->DrawString(mpSpriteBatch, ss.str().c_str(), Vector2(40, 10), Colours::White, 0, Vector2(0, 0), Vector2(1.f, 1.f));
 
 		wstringstream ssScore;
 		ssScore << L"Score: " << fixed << setprecision(0) << timeAlive * 10;
-		mpFont->DrawString(mpSpriteBatch, ssScore.str().c_str(), Vector2(scoreX, 10), Colours::Green, 0, Vector2(0, 0), Vector2(1.f, 1.f));
+		mpFont->DrawString(mpSpriteBatch, ssScore.str().c_str(), Vector2(scoreX, 10), Colours::White, 0, Vector2(0, 0), Vector2(1.f, 1.f));
 
 	mpSpriteBatch->End();
 

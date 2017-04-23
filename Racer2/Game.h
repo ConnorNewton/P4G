@@ -36,14 +36,18 @@ public:
 	DirectX::SimpleMath::Vector3 mCamPos   = DirectX::SimpleMath::Vector3(0, 0, -55);
 	DirectX::SimpleMath::Vector3 mCamAngle = DirectX::SimpleMath::Vector3(0, 1, 0);
 
-	DirectX::SimpleMath::Vector3 mCarRot = DirectX::SimpleMath::Vector3(0, 0, 0);
-	DirectX::SimpleMath::Vector3 mCarPos = DirectX::SimpleMath::Vector3(0, -9, 0);
+	DirectX::SimpleMath::Vector3 mCarRot = DirectX::SimpleMath::Vector3(D2R(90), D2R(90), D2R(0));
+	DirectX::SimpleMath::Vector3 mCarPos = DirectX::SimpleMath::Vector3(0, 0, 52);
+
+	//Old Car
+	//DirectX::SimpleMath::Vector3 mCarRot = DirectX::SimpleMath::Vector3(0, 0, 0));
+	//DirectX::SimpleMath::Vector3 mCarPos = DirectX::SimpleMath::Vector3(0, -9, 0);
 
 	//ensure each mesh is loaded and release exactly once
 	MeshManager mMeshMgr;
 	//game models that reference meshes
 	Model mCar;
-	Model mCar2;
+	Model mTunnel;
 
 	//handy rendering state
 	FX::MyFX mFX;
@@ -66,7 +70,6 @@ private:
 	DirectX::SpriteBatch *mpSpriteBatch = nullptr;
 	DirectX::SpriteFont *mpFont = nullptr, *mpFont2 = nullptr;
 	
-	int rotSlots[6];
 	float spawnTimer;
 	float maxTimer = 1;
 
@@ -85,7 +88,6 @@ private:
 	struct Obstacle
 	{
 		DirectX::SimpleMath::Vector3 pos = DirectX::SimpleMath::Vector3(100, 0, 0);
-		int rotSlot = 0;
 		bool active = false;
 		Model ObsModel;
 	};
