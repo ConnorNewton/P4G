@@ -148,9 +148,19 @@ void Game::Update(float dTime)
 	const float rotInc = 200.f * dTime;
 
 	if (mMKInput.IsPressed(VK_A))
+	{
 		mCarRot.z -= rotInc * (PI / 180);
+		if (GetIAudioMgr()->GetSfxMgr()->IsPlaying(mSfxHdl) == false){
+			GetIAudioMgr()->GetSfxMgr()->Play("sfx2", false, false, &mSfxHdl, 0.5f);
+		}
+	}
 	else if (mMKInput.IsPressed(VK_D))
+	{
 		mCarRot.z += rotInc * (PI / 180);
+		if (GetIAudioMgr()->GetSfxMgr()->IsPlaying(mSfxHdl) == false){
+			GetIAudioMgr()->GetSfxMgr()->Play("sfx2", false, false, &mSfxHdl, 0.5f);
+		}
+	}
 
 	if (mLoadData.running)
 		return;

@@ -60,6 +60,8 @@ private:
 	float speed = 0.0;
 	int lastObs = 0;
 
+	unsigned int mSfxHdl;	//movement sound effect instance we can manipulate
+	unsigned int mMusicHdl;	//background music instance we can manipulate
 	//load meshes
 	void Load();
 	//display a message
