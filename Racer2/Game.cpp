@@ -62,7 +62,7 @@ void Game::Load()
 	Mesh& obsMesh = BuildCube(mMeshMgr);
 	//Mesh& obsMesh = mMeshMgr.CreateMesh("ferrari");
 	//obsMesh.CreateFrom("data/Lamborghini.x", gd3dDevice, mFX.mCache);
-	for (int i = 0; i < 5; ++i)
+	for (int i = 0; i < 15; ++i)
 	{
 		Obstacles[i].ObsModel.Initialise(obsMesh);
 		Obstacles[i].ObsModel.GetScale() = Vector3(3, 3, 3);
@@ -106,7 +106,7 @@ void Game::Initialise()
 {
 	//srand(time(NULL));
 	mFX.Init(gd3dDevice);
-
+	SeedRandom(NULL);
 	/*FX::SetupDirectionalLight(0, true, Vector3(-0.7f, -0.7f, 0.7f), Vector3(0.9f, 0.85f, 0.85f), Vector3(0.1f, 0.1f, 0.1f), Vector3(1, 1, 1));*/
 	
 	FX::SetupSpotLight(1, true, Vector3(0, 0, 675), Vector3(0, 0, -1), Vector3(0.8f, 0.8f, 0.8f), Vector3(0.8f, 0.8f, 0.8f), Vector3(0.8f, 0.8f, 0.8f), 775, 0.1f, D2R(1), D2R(12));
@@ -127,7 +127,7 @@ void Game::Initialise()
 	mMKInput.Initialise(GetMainWnd());
 	mGamepad.Initialise();
 }
-
+ 
 void Game::Release()
 {
 	mFX.Release();
@@ -159,86 +159,46 @@ void Game::Update(float dTime)
 	mCamPos.z += mGamepad.GetState(0).leftStickY * dTime;
 	mCamPos.y += mGamepad.GetState(0).rightStickY * dTime;
 
+	//Need to increase difficulty with dtime, additional variable which modifies spawnTimer
 	timeAlive += dTime;
+	maxTimer -= (dTime / 100);
 	spawnTimer -= dTime;
 	if (speed < 50)
 		speed += dTime * 10;
 	else
 		speed += dTime / 2;
 
+
 	if ((speed > 50) && (spawnTimer <= 0))
 	{
-		switch (lastObs)
+		for (int i = 0; i < 15; i++)	//use size of obstacles
 		{
-		case 0:
-		{
-			if (!Obstacles[1].active)
+			if (!Obstacles[i].active)
 			{
-				Obstacles[1].pos = DirectX::SimpleMath::Vector3(0, -9, 300);
-				Obstacles[1].ObsModel.GetRotation() = DirectX::SimpleMath::Vector3(0, 0, D2R(GetRandom(0, 359)));
-				Obstacles[1].active = true;
-				lastObs = 1;
-			}
-
-		}
-		break;
-		case 1:
-		{
-			if (!Obstacles[2].active)
-			{
-				Obstacles[2].ObsModel.GetRotation() = DirectX::SimpleMath::Vector3(0, 0, 180);
-				Obstacles[2].pos = DirectX::SimpleMath::Vector3(0, -9, 300);
-				Obstacles[2].ObsModel.GetRotation() = DirectX::SimpleMath::Vector3(0, 0, mCarRot.z);
-				Obstacles[2].active = true;
-				lastObs = 2;
+				Obstacles[i].pos = DirectX::SimpleMath::Vector3(0, -9, 300);
+				if (GetRandom(0, 5) < 3)
+				{
+					Obstacles[i].ObsModel.GetRotation() = DirectX::SimpleMath::Vector3(0, 0, D2R(mCarRot.z));
+				}
+				else
+				{
+					Obstacles[i].ObsModel.GetRotation() = DirectX::SimpleMath::Vector3(0, 0, D2R(GetRandom(0, 359)));
+				}
+				Obstacles[i].active = true;
+				spawnTimer = maxTimer;
+				return;
 			}
 		}
-		break;
-		case 2:
-		{
-			if (!Obstacles[3].active)
-			{
-				Obstacles[3].pos = DirectX::SimpleMath::Vector3(0, -9, 300);
-				Obstacles[3].ObsModel.GetRotation() = DirectX::SimpleMath::Vector3(0, 0, D2R(GetRandom(0, 359)));
-				Obstacles[3].active = true;
-				lastObs = 3;
-			}
-		}
-		break;
-		case 3:
-		{
-			if (!Obstacles[4].active)
-			{
-				Obstacles[4].pos = DirectX::SimpleMath::Vector3(0, -9, 300);
-				Obstacles[4].ObsModel.GetRotation() = DirectX::SimpleMath::Vector3(0, 0, mCarRot.z);
-				Obstacles[4].active = true;
-				lastObs = 4;
-			}
-		}
-		break;
-		case 4:
-		{
-			if (!Obstacles[0].active)
-			{
-				Obstacles[0].pos = DirectX::SimpleMath::Vector3(0, -9, 300);
-				Obstacles[0].ObsModel.GetRotation() = DirectX::SimpleMath::Vector3(0, 0, D2R(GetRandom(0, 359)));
-				Obstacles[0].active = true;
-				lastObs = 0;
-			}
-		}
-		break;
-		}
-		spawnTimer = maxTimer;
 	}
 
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 15; i++)
 	{
 		if (Obstacles[i].active) 
 		{
 			if (Obstacles[i].pos.z > mCamPos.z)
 			{
-				Obstacles[i].pos.z -= 0.1;
+				Obstacles[i].pos.z -= 0.1 * (speed / 50);
 
 			}
 			else
@@ -284,7 +244,7 @@ void Game::Render(float dTime)
 	mFX.Render(mCar, gd3dImmediateContext);
 	mFX.Render(mTunnel, gd3dImmediateContext);
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 15; i++)
 	{
 		if (Obstacles[i].active)
 			mFX.Render(Obstacles[i].ObsModel, gd3dImmediateContext);

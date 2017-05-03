@@ -92,7 +92,7 @@ private:
 		Model ObsModel;
 	};
 
-	Obstacle Obstacles[5];
+	Obstacle Obstacles[15];
 
 	LoadData mLoadData;
 	MouseAndKeys mMKInput;
