@@ -92,6 +92,7 @@ private:
 		DirectX::SimpleMath::Vector3 pos = DirectX::SimpleMath::Vector3(100, 0, 0);
 		bool active = false;
 		Model ObsModel;
+		DirectX::BoundingBox bB;
 	};
 
 	Obstacle Obstacles[15];

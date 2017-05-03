@@ -109,7 +109,7 @@ void Game::Initialise()
 	SeedRandom(NULL);
 	/*FX::SetupDirectionalLight(0, true, Vector3(-0.7f, -0.7f, 0.7f), Vector3(0.9f, 0.85f, 0.85f), Vector3(0.1f, 0.1f, 0.1f), Vector3(1, 1, 1));*/
 	
-	FX::SetupSpotLight(1, true, Vector3(0, 0, 675), Vector3(0, 0, -1), Vector3(0.8f, 0.8f, 0.8f), Vector3(0.8f, 0.8f, 0.8f), Vector3(0.8f, 0.8f, 0.8f), 775, 0.1f, D2R(1), D2R(12));
+	FX::SetupSpotLight(1, true, Vector3(0, 0, 675), Vector3(0, 0, -1), Vector3(0.9f, 0.9f, 0.9f), Vector3(0.8f, 0.8f, 0.8f), Vector3(0.8f, 0.8f, 0.8f), 775, 0.1f, D2R(1), D2R(12));
 
 	mpSpriteBatch = new SpriteBatch(gd3dImmediateContext);
 	assert(mpSpriteBatch);
@@ -144,6 +144,8 @@ void Game::Update(float dTime)
 {
 	mGamepad.Update();
 	GetIAudioMgr()->Update();
+	//FX::SetupSpotLight(2, true, Vector3(0, 0, 51), Vector3(0, -1, 0), Vector3(1, 1, 1), Vector3(0, 0, 0), Vector3(0, 0, 0), 4, 0.1f, D2R(1), D2R(20));
+
 
 	const float rotInc = 200.f * dTime;
 
@@ -221,6 +223,9 @@ void Game::Update(float dTime)
 		}
 		Obstacles[i].ObsModel.GetPosition() = Obstacles[i].pos;		//TRANSLATE ALL POSITIONS INTO ACTUAL TRANSFORMATIONS
 	}
+
+	//Scrolling texture code
+	mTunnel.GetMesh().GetSubMesh(0).material.texTrsfm.translate += Vector2(dTime, 0);
 }
 
 
