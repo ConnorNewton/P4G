@@ -1,5 +1,5 @@
 ﻿  Game.cpp
 f:\repositories\p4gprojects\racer\racer2\game.cpp(26): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
-f:\repositories\p4gprojects\racer\racer2\game.cpp(185): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-f:\repositories\p4gprojects\racer\racer2\game.cpp(201): warning C4244: '-=' : conversion from 'double' to 'float', possible loss of data
+f:\repositories\p4gprojects\racer\racer2\game.cpp(187): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+f:\repositories\p4gprojects\racer\racer2\game.cpp(203): warning C4244: '-=' : conversion from 'double' to 'float', possible loss of data
   Racer2.vcxproj -> F:\Repositories\P4GProjects\Racer\Racer2\../bin/Racer2.exe

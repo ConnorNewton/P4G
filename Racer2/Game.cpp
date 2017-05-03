@@ -155,9 +155,11 @@ void Game::Update(float dTime)
 	if (mLoadData.running)
 		return;
 
-	mCamPos.x += mGamepad.GetState(0).leftStickX * dTime;
+	/*mCamPos.x += mGamepad.GetState(0).leftStickX * dTime;
 	mCamPos.z += mGamepad.GetState(0).leftStickY * dTime;
-	mCamPos.y += mGamepad.GetState(0).rightStickY * dTime;
+	mCamPos.y += mGamepad.GetState(0).rightStickY * dTime;*/
+
+	mCarRot.z += mGamepad.GetState(0).leftStickX * dTime * 2;
 
 	//Need to increase difficulty with dtime, additional variable which modifies spawnTimer
 	timeAlive += dTime;
@@ -176,9 +178,9 @@ void Game::Update(float dTime)
 			if (!Obstacles[i].active)
 			{
 				Obstacles[i].pos = DirectX::SimpleMath::Vector3(0, -9, 300);
-				if (GetRandom(0, 5) < 3)
+				if (GetRandom(0, 5) < 2)
 				{
-					Obstacles[i].ObsModel.GetRotation() = DirectX::SimpleMath::Vector3(0, 0, D2R(mCarRot.z));
+					Obstacles[i].ObsModel.GetRotation() = DirectX::SimpleMath::Vector3(0, 0, mCarRot.z);
 				}
 				else
 				{
